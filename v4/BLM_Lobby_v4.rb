@@ -4,7 +4,7 @@
 #   load "/full/path/to/BLM_Lobby.rb"
 # Units: mm. Each object is a named group on a tag (Structure, Partitions, Glazing,
 # Stair, Doors, Aluminium, Service, Zones, Reception, Lounge, Ceiling, and one tag per electrical category: Electrical lamp / socket / switch / out / fan / panel). Hide tag "Ceiling" to look inside.
-# Room names are text labels on tag "Rooms": double-click a label to rename the room.
+# Room names are text labels on tag "Rooms", zone labels on tag "Zone labels": double-click a label to rename it.
 require 'sketchup.rb'
 module BlmLobby
   MATS = {
@@ -401,27 +401,27 @@ module BlmLobby
     ['RECEPTION', 7350, 2720, 850, 110, 's'],
   ]
   ROOMS = [
-    ['Warehouse Chemical', 1500, 4750],
-    ['Toilet', 4040, 4750],
-    ['Warehouse Linen', 2600, 1150],
-    ['Corridor', 3300, 3150],
-    ['Lobby', 7900, 1300],
-    ['Reception', 7800, 3700],
-    ['Security / Office 2', 10900, 2100],
-    ['Luggage Room', 10950, 4150],
-    ['Stairs Entrance', 5400, 4900],
-    ['The Cupboard Under the Stairs', 7300, 4950],
-    ['Guard 2 (greeter, luggage)', 6500, 3700],
-    ['Guard 1 (CCTV, radio)', 11200, 600],
-    ['Luggage trolley', 7600, 600],
-    ['Waiting / Taxi', 8500, 2000],
-    ['Charging bar', 5550, 950],
-    ['Site Map', 9120, 250],
-    ['Safe Deposit', 8900, 5250],
-    ['Keys', 6950, 4120],
-    ['Parcels', 8980, 4120],
-    ['Barrier to villas', 14300, -900],
-    ['Parking', 6000, -2800],
+    ['Warehouse Chemical', 1500, 4750, 'Rooms'],
+    ['Toilet', 4040, 4750, 'Rooms'],
+    ['Warehouse Linen', 2600, 1150, 'Rooms'],
+    ['Corridor', 3300, 3150, 'Rooms'],
+    ['Lobby', 7900, 1300, 'Rooms'],
+    ['Reception', 7800, 3700, 'Rooms'],
+    ['Security / Office 2', 10900, 2100, 'Rooms'],
+    ['Luggage Room', 10950, 4150, 'Rooms'],
+    ['Stairs Entrance', 5400, 4900, 'Rooms'],
+    ['The Cupboard Under the Stairs', 7300, 4950, 'Rooms'],
+    ['Guard 2 (greeter, luggage)', 6500, 3700, 'Zone labels'],
+    ['Guard 1 (CCTV, radio)', 11200, 600, 'Zone labels'],
+    ['Luggage trolley', 7600, 600, 'Zone labels'],
+    ['Waiting / Taxi', 8500, 2000, 'Zone labels'],
+    ['Charging bar', 5550, 950, 'Zone labels'],
+    ['Site Map', 9120, 250, 'Zone labels'],
+    ['Safe Deposit', 8900, 5250, 'Zone labels'],
+    ['Keys', 6950, 4120, 'Zone labels'],
+    ['Parcels', 8980, 4120, 'Zone labels'],
+    ['Barrier to villas', 14300, -900, 'Zone labels'],
+    ['Parking', 6000, -2800, 'Zone labels'],
   ]
 
   def self.build
@@ -469,11 +469,10 @@ module BlmLobby
       rescue StandardError
       end
     end
-    rooms = model.layers['Rooms'] || model.layers.add('Rooms')
-    ROOMS.each do |name, x, y|
+    ROOMS.each do |name, x, y, tag|
       begin
         t = root.entities.add_text(name, Geom::Point3d.new(x.mm, y.mm, 100.mm))
-        t.layer = rooms
+        t.layer = model.layers[tag] || model.layers.add(tag)
       rescue StandardError
       end
     end
