@@ -6,7 +6,7 @@ import json, math
 S = 9.33  # mm per plan pixel (corridor 150 px = 1400 mm)
 def X(px): return int(round((px - 75) * S / 10) * 10)
 def Y(py): return int(round((712 - py) * S / 10) * 10)
-H = 3000
+H = 2700                                     # floor 1 clear height, given by the owner
 
 MATS = {  # name: (r,g,b,alpha)
     'floor': (228, 226, 221, 1), 'wall': (216, 208, 198, 1), 'wall_dark': (212, 204, 194, 1), 'wall_grey': (198, 190, 180, 1),
@@ -128,7 +128,7 @@ wall('Security north wall', 'wall', 11390, XI, 2650, 2810)
 
 # ---------------- Stair (plan from the drawing: 14 goings of 240, width 1090) ----------------
 x0, yS, yN = 5990, 4400, YI
-RISE, GO, NT = 200, 240, 14
+GO, NT = 240, 14; RISE = (H + 150) / (NT + 1)   # 15 risers from floor to floor
 for i in range(1, NT + 1):
     xa = x0 + (i - 1) * GO
     box('Tread %d' % i, 'Stair', 'steel', xa, xa + 260, yS, yN, i * RISE - 12, i * RISE)   # steel plate treads as built
@@ -237,7 +237,7 @@ for zz in (1450, 1800):                                      # two sconces on th
 # niche of the Warehouse Linen wall (500 deep, measured): blue pill panels, two white armchairs, a side table
 NX = 4880
 for k, yy in enumerate(range(70, 2250, 275)):
-    for z0, z1 in ([(120, 1300), (1400, 2700)] if k % 2 == 0 else [(120, 700), (800, 1950), (2050, 2700)]):
+    for z0, z1 in ([(120, 1300), (1400, H - 120)] if k % 2 == 0 else [(120, 700), (800, 1950), (2050, H - 120)]):
         box('Pill panel', SV, 'accent', NX, NX + 30, yy, yy + 235, z0, z1)
 for yy in (330, 1230):
     box('Armchair seat', SV, 'white', NX + 60, NX + 760, yy, yy + 700, 250, 430)
@@ -365,7 +365,17 @@ def table(name, x0, y0):
 NB = 6; BW = XI / NB; BD = 2100
 for i in range(1, NB):
     wally2('Cabin divider', i * BW, 0, BD)
-wallx2('Corridor wall S', BD + T75 / 2, 0, XI, doors=[(i * BW + 60, i * BW + 760) for i in range(NB)])
+# corridor wall of the cabins: door 700, then one stock glass panel 1100 x 2300 (frosted film) that passes daylight into the corridor
+GW, GH = 1100, 2300                          # stock glass panel size, estimated from the photo: measure before building
+yc = BD + T75 / 2
+for i in range(NB):
+    x0c = i * BW
+    b2('Corridor wall S', FP, 'wall', x0c, x0c + 60, yc - T75 / 2, yc + T75 / 2, 0, H2)
+    door2('Cabin door', 'x', yc, x0c + 60, x0c + 760)
+    b2('Corridor wall S', FP, 'wall', x0c + 760, x0c + 860, yc - T75 / 2, yc + T75 / 2, 0, H2)
+    b2('Stock glass panel (frosted)', FP, 'glass', x0c + 860, x0c + 860 + GW, yc - 6, yc + 6, 0, GH)
+    b2('Glass panel head', FP, 'wall', x0c + 860, x0c + 860 + GW, yc - T75 / 2, yc + T75 / 2, GH, H2)
+    b2('Corridor wall S', FP, 'wall', x0c + 860 + GW, x0c + BW, yc - T75 / 2, yc + T75 / 2, 0, H2)
 for i in range(NB):
     table('Massage table', i * BW + 800, 80)
     b2('Cabin shelf', FF, 'wood', (i + 1) * BW - 37 - 300, (i + 1) * BW - 37, BD - 500, BD, 0, 800)
@@ -378,7 +388,7 @@ wally2('Wet divider', 4162, CN, 5050)                      # shower 1 | shower 2
 b2('Wet block east wall', FP, 'wall', 5100, 5175, CN - T75 / 2, 4250, 0, H2)
 # staff / linen room (2175 x 2190): shelving and a work table
 for z in (300, 900, 1500, 2000):
-    b2('Linen shelf', FF, 'wood', 0, 450, 3400, 5400, z, z + 30)
+    b2('Linen shelf', FF, 'white', 0, 450, 3400, 5400, z, z + 30)      # stock white board
 b2('Staff table', FF, 'wood', 1300, 2100, 4700, 5400, 720, 750)
 # WC and two showers sit above the 1st floor toilet and next to the shaft
 b2('WC pan', FF, 'board', 2500, 2900, 4880, 5420, 0, 420); b2('WC basin', FF, 'board', 2260, 2560, 3950, 4350, 780, 850)
@@ -398,9 +408,9 @@ def armchair2(x0, y0, face):
 armchair2(10250, 4720, 's'); armchair2(11050, 4720, 's')
 armchair2(11620, 3780, 'w'); armchair2(11620, 2980, 'w')
 cyl('Waiting table', FF, 'wood_dark', 10900, 4050, 300, 300, F + 380, F + 420, 16); cyl('Waiting table leg', FF, 'steel', 10900, 4050, 30, 30, F, F + 380, 8)
-b2('Tea console', FF, 'wood', 11300, 12300, 2190, 2590, 0, 900)   # against the corridor wall, clear of the route from the stair
+b2('Tea console', FF, 'white', 11300, 12300, 2190, 2590, 0, 900)   # against the corridor wall, clear of the route from the stair
 # --- along the stair enclosure: lockers and a bench for changing shoes
-b2('Lockers', FF, 'wood_dark', 5400, 7600, 3830, 4250, 0, 1800)
+b2('Lockers', FF, 'white', 5400, 7600, 3830, 4250, 0, 1800)          # stock white board
 for xx in range(5400 + 367, 7600, 367):
     b2('Locker joint', FF, 'steel', xx - 3, xx + 3, 3824, 3830, 40, 1760)
 b2('Bench', FF, 'wood', 7800, 9300, 3800, 4250, 0, 450); b2('Bench cushion', FF, 'fabric', 7820, 9280, 3820, 4230, 450, 520)
@@ -430,6 +440,10 @@ PALETTES = [
 ROOM_IDS = {'r1', 'r2', 'r3', 'cor', 'lobby', 'rec', 'sec', 'lounge', 'stair', 'store'}   # the rest are zone / function labels
 ROOMS = [{'id': i, 'name': n, 'x': x, 'y': y, 'z': 60, 'f': 1, 'kind': 'room' if i in ROOM_IDS else 'zone'} for i, n, x, y in ROOMS]
 ROOMS += [{'id': i, 'name': n, 'x': int(x), 'y': int(y), 'z': F + 60, 'f': 2, 'kind': 'room'} for i, n, x, y in ROOMS2]
+# where materials already on site are used (button Stock materials)
+STOCK = [('st1', 'White board: coffee table', 8065, 900, 1), ('st2', 'Glass panels x6, frosted', 6200, 2250, 2),
+         ('st3', 'White board: lockers', 6500, 4040, 2), ('st4', 'White board: shelves', 400, 4400, 2), ('st5', 'White board: tea console', 11800, 2400, 2)]
+ROOMS += [{'id': i, 'name': n, 'x': x, 'y': y, 'z': (F if f == 2 else 0) + 60, 'f': f, 'kind': 'stock'} for i, n, x, y, f in STOCK]
 DIM = {'x': 4300, 'y0': 2460, 'y1': 3830}
 SIZE = {'L': XE - XW, 'W': YN - YS, 'H': H}
 # dimension lines for the viewer and the drawing: (x0, y0, x1, y1, note)
@@ -447,7 +461,7 @@ _D = [(XW, -900, XE, -900, ''), (-900, YS, -900, YN, ''),                       
       (3440, 5250, 4640, 5250, ''),                                              # toilet
       (4880, 2050, 5380, 2050, 'recess')]                                       # recess of the linen wall
 DIMS = [{'f': 1, 'a': [x0, y0, 40], 'b': [x1, y1, 40], 't': ('%d' % round(math.hypot(x1 - x0, y1 - y0))) + ((' ' + n) if n else '')} for x0, y0, x1, y1, n in _D]
-DIMS.append({'f': 1, 'a': [XW - 300, YS - 300, 0], 'b': [XW - 300, YS - 300, H], 't': '%d height, assumed' % H})
+DIMS.append({'f': 1, 'a': [XW - 300, YS - 300, 0], 'b': [XW - 300, YS - 300, H], 't': '%d ceiling height' % H})
 _D2 = [(37, 300, BW - 37, 300, 'cabin'), (300, 0, 300, BD, ''), (4000, BD + 75, 4000, CN - 37, 'corridor'), (0, 5250, 2175, 5250, ''),
        (300, CN + 37, 300, YI, ''), (2250, 3700, 3150, 3700, ''), (3225, 3700, 4125, 3700, ''), (4200, 3700, 5100, 3700, ''),
        (9500, 5250, XI, 5250, 'waiting'), (12100, BD + 75, 12100, YI, ''), (8600, BD + 75, 8600, 4250, ''), (XW, -900, XE, -900, ''), (-900, YS, -900, YN, '')]

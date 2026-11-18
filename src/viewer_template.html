@@ -89,6 +89,7 @@ button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
     <button type="button" id="t-elec" aria-pressed="true">Electrical</button>
     <button type="button" id="t-ceil" aria-pressed="false">Ceiling and beams</button>
     <button type="button" id="t-zones" aria-pressed="false">Zones</button>
+    <button type="button" id="t-stock" aria-pressed="false">Stock materials</button>
     <button type="button" id="t-furn" aria-pressed="true">Equipment</button>
     <button type="button" id="t-edge" aria-pressed="true">Outlines</button>
   </div>
@@ -211,7 +212,7 @@ function placeDims(){
 }
 
 // ---- room tags (rename by typing; names are remembered in this browser) ----
-var roomsBox=document.getElementById('rooms'),roomEls=[],saved={},roomP=new THREE.Vector3(),roomsOn=true,zonesOn=false;
+var roomsBox=document.getElementById('rooms'),roomEls=[],saved={},roomP=new THREE.Vector3(),roomsOn=true,zonesOn=false,stockOn=false;
 try{saved=JSON.parse(localStorage.getItem('blm-lobby-rooms')||'{}')||{};}catch(e){saved={};}
 M.rooms.forEach(function(r){
   var el=document.createElement('input');el.type='text';el.className='room';el.id='room-'+r.id;
@@ -226,7 +227,7 @@ function placeRooms(){
   var w=stage.clientWidth,h=stage.clientHeight;
   roomEls.forEach(function(p){
     roomP.set(p[0].x,p[0].y,p[0].z||60).project(camera);
-    var show=(p[0].f||1)===floor&&(p[0].kind==='zone'?zonesOn:roomsOn)&&roomP.z<1&&roomP.z>-1&&Math.abs(roomP.x)<1&&Math.abs(roomP.y)<0.95;
+    var show=(p[0].f||1)===floor&&(p[0].kind==='zone'?zonesOn:p[0].kind==='stock'?stockOn:roomsOn)&&roomP.z<1&&roomP.z>-1&&Math.abs(roomP.x)<1&&Math.abs(roomP.y)<0.95;
     p[1].style.display=show?'block':'none';
     if(show){p[1].style.left=((roomP.x+1)/2*w)+'px';p[1].style.top=((1-roomP.y)/2*h)+'px';}
   });
@@ -279,12 +280,12 @@ var VIEWS=[
   ['Luggage room',[9900,3300,1700],[11600,5000,900],1],
   ['CCTV post',[9950,2450,1800],[12300,500,900],1],
   ['Barrier outside',[17500,-6500,5200],[12600,-300,600],1],
-  ['Spa overview',[15500,-7500,14500],[6200,2700,3600],2],
-  ['Spa plan',[6120,2725,19500],[6120,2735,3150],2],
-  ['Spa corridor',[11800,2700,4850],[2000,2700,4300],2],
-  ['Cabins',[3100,3100,5000],[3100,600,3700],2],
-  ['Showers and WC',[3700,2500,5000],[3700,4800,3800],2],
-  ['Waiting zone',[9300,2600,4900],[11500,4700,3900],2]
+  ['Spa overview',[15500,-7500,14200],[6200,2700,3300],2],
+  ['Spa plan',[6120,2725,19200],[6120,2735,2850],2],
+  ['Spa corridor',[11800,2700,4550],[2000,2700,4000],2],
+  ['Cabins',[3100,3100,4700],[3100,600,3400],2],
+  ['Showers and WC',[3700,2500,4700],[3700,4800,3500],2],
+  ['Waiting zone',[9300,2600,4600],[11500,4700,3600],2]
 ];
 var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function go(i,instant){
@@ -364,7 +365,7 @@ function refresh(){
   legend.style.display=(elOn&&floor===1)?'flex':'none';
   viewBtns.forEach(function(b,i){b.style.display=VIEWS[i][3]===floor?'':'none';});
   press('f-1',floor===1);press('f-2',floor===2);
-  press('t-rooms',roomsOn);press('t-zones',zonesOn);press('t-dims',dimsOn);press('t-elec',elOn);press('t-ceil',ceilOn||floor===2);press('t-furn',furnOn);
+  press('t-rooms',roomsOn);press('t-zones',zonesOn);press('t-stock',stockOn);press('t-dims',dimsOn);press('t-elec',elOn);press('t-ceil',ceilOn||floor===2);press('t-furn',furnOn);
   dirty=true;
 }
 function setFloor(f,keepView){if(floor===f)return;floor=f;refresh();if(!keepView)go(f===1?0:10);}
@@ -372,8 +373,9 @@ document.getElementById('f-1').addEventListener('click',function(){setFloor(1);}
 document.getElementById('f-2').addEventListener('click',function(){setFloor(2);});
 function on(id,fn){document.getElementById(id).addEventListener('click',function(){fn();refresh();});}
 // room names and zones (zone colours + zone labels) are mutually exclusive; both can be off
-on('t-rooms',function(){roomsOn=!roomsOn;zonesOn=false;});
-on('t-zones',function(){zonesOn=!zonesOn;roomsOn=false;});
+on('t-rooms',function(){roomsOn=!roomsOn;zonesOn=false;stockOn=false;});
+on('t-zones',function(){zonesOn=!zonesOn;roomsOn=false;stockOn=false;});
+on('t-stock',function(){stockOn=!stockOn;roomsOn=false;zonesOn=false;});
 on('t-dims',function(){dimsOn=!dimsOn;});
 on('t-elec',function(){elOn=!elOn;});
 on('t-ceil',function(){ceilOn=!ceilOn;});

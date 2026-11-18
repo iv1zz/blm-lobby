@@ -40,6 +40,7 @@ Pull before you start (`git pull --ff-only`): someone else may have pushed.
 - Tags become SketchUp tags and viewer layers. Floor 1: `Structure`, `Partitions`, `Doors`, `Glazing`, `Aluminium`, `Stair`, `Reception`, `Service`, `Zones`, `Site`, `Ceiling`, `Electrical <type>`. Floor 2 tags start with `F2`.
 - Labels are in `ROOMS` (floor 1) and `ROOMS2` (floor 2). A label is a room name or a zone label; the viewer shows them with two mutually exclusive buttons.
 - Dimension lines are in `_D` (floor 1) and `_D2` (floor 2).
+- Labels of kind `stock` (list `STOCK`) mark where materials already on site are used; the viewer shows them with the button Stock materials, exclusive with room names and zones.
 - Colour palettes for the viewer slider are in `PALETTES`: each one overrides material colours by name. The first palette is the base design; the SketchUp and DAE exports always use the base colours. Use the materials `accent` and `ceil` for anything that should follow the palette.
 - Plan dimensions come from a 1:50 drawing and from site measurements. Do not move existing walls unless the person gives a measurement or says the wall is different on site.
 
@@ -55,8 +56,8 @@ Pull before you start (`git pull --ff-only`): someone else may have pushed.
 
 ## Assumed values, not yet measured
 
-- Floor 1 clear height 3000 and the steel beams; floor 2 clear height 2700.
-- Stair rise 200 (the going of 240 and the width are from the drawing).
+- The steel beams (size and positions); floor 2 clear height 2700. Floor 1 clear height is 2700, given by the owner.
+- Stair rise: 15 equal risers from floor to floor, about 190 (the going of 240 and the width are from the drawing).
 - Entrance door and window head heights on both floors; mullion positions of the floor 2 windows.
 - The route of the drive at the barrier and everything else outdoors.
 - Heights of the electrical points (positions in plan are from the drawing).
@@ -74,7 +75,9 @@ Floor 1, lobby for a complex of 30 townhouses:
 - Blue ceiling with black beams, beige walls, light floor. The viewer has a palette slider that recolours the accent and the ceiling.
 - Luggage room with racks; safe-deposit boxes in the cupboard under the stair.
 
-Floor 2, spa (test layout, unchanged from version 5):
+Materials already on site, as used so far (sizes estimated from photos, not measured): six glass panels about 1100 x 2300 as frosted lights in the spa corridor wall, one beside each cabin door; white boards for the lobby coffee table and for the spa lockers, linen shelves and tea console.
+
+Floor 2, spa (test layout):
 - Six massage cabins with doors along the window wall, a waiting zone at the stair exit, a staff and linen room, a WC and two showers above the floor 1 toilet.
 - All old partitions are removed except the existing enclosure around the stair.
 
