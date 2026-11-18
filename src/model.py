@@ -239,14 +239,14 @@ NX = 4880
 for k, yy in enumerate(range(70, 2250, 275)):
     for z0, z1 in ([(120, 1300), (1400, H - 120)] if k % 2 == 0 else [(120, 700), (800, 1950), (2050, H - 120)]):
         box('Pill panel', SV, 'accent', NX, NX + 30, yy, yy + 235, z0, z1)
-for yy in (330, 1230):
+for yy in (330, 1530):                       # 500 between the chairs for the side table
     box('Armchair seat', SV, 'white', NX + 60, NX + 760, yy, yy + 700, 250, 430)
     box('Armchair back', SV, 'white', NX + 60, NX + 200, yy, yy + 700, 430, 800)
     for ay in (yy, yy + 620):
         box('Armchair arm', SV, 'white', NX + 200, NX + 760, ay, ay + 80, 430, 600)
     for lx, ly in ((NX + 80, yy + 20), (NX + 720, yy + 20), (NX + 80, yy + 660), (NX + 720, yy + 660)):
         box('Armchair leg', SV, 'steel', lx, lx + 20, ly, ly + 20, 0, 250)
-cyl('Side table', SV, 'wood_dark', NX + 350, 2060, 190, 190, 0, 620, 14)
+cyl('Side table', SV, 'wood_dark', NX + 410, 1280, 190, 190, 0, 620, 14)   # centred between the two armchairs
 # --- luggage room: racks (3 tiers) on the north wall and by the east glazing
 def rack(name, x0, x1, y0, y1):
     for z in (150, 900, 1650):
