@@ -13,4 +13,5 @@ window.matchMedia=()=>({matches:false,addEventListener(){}});window.addEventList
 new Function(src)();
 // click through floors, toggles and every view
 ['f-2','t-dims','t-zones','t-rooms','t-elec','t-ceil','t-furn','t-edge','f-1','t-zones','f-2','f-1'].forEach(id=>{if(!handlers[id]||!handlers[id].click)throw new Error('no click handler: '+id);handlers[id].click();});
+if(!handlers['pal']||!handlers['pal'].input)throw new Error('no palette handler');for(let i=0;i<6;i++){els['pal'].value=String(i);handlers['pal'].input();}
 console.log('smoke ok; pressed f-1:',els['f-1'].attrs['aria-pressed'],'f-2:',els['f-2'].attrs['aria-pressed'],'err box:',JSON.stringify(els['err'].textContent));

@@ -9,8 +9,8 @@ Reply to people in the language they write in. The site itself is in English.
 | Path | What it is |
 |---|---|
 | `index.html` | The live site, always the current version. Served at https://iv1zz.github.io/blm-lobby/ |
-| `v5/` | Current version: viewer copy, SketchUp files (`.rb`, `.dae`), plans (PDF A3 1:50, DXF per floor) |
-| `v4/`, `v3/` | Frozen versions. Never edit them |
+| `v6/` | Current version: viewer copy, SketchUp files (`.rb`, `.dae`), plans (PDF A3 1:50, DXF per floor) |
+| `v5/`, `v4/`, `v3/` | Frozen versions. Never edit them |
 | `src/model.py` | The model. All geometry, labels, dimensions and the version number live here |
 | `src/viewer_template.html` | The web viewer (three.js r128 from cdnjs, own orbit controls) |
 | `src/export.py` | Writes the viewer page, the SketchUp Ruby script and the COLLADA file |
@@ -40,6 +40,7 @@ Pull before you start (`git pull --ff-only`): someone else may have pushed.
 - Tags become SketchUp tags and viewer layers. Floor 1: `Structure`, `Partitions`, `Doors`, `Glazing`, `Aluminium`, `Stair`, `Reception`, `Service`, `Zones`, `Site`, `Ceiling`, `Electrical <type>`. Floor 2 tags start with `F2`.
 - Labels are in `ROOMS` (floor 1) and `ROOMS2` (floor 2). A label is a room name or a zone label; the viewer shows them with two mutually exclusive buttons.
 - Dimension lines are in `_D` (floor 1) and `_D2` (floor 2).
+- Colour palettes for the viewer slider are in `PALETTES`: each one overrides material colours by name. The first palette is the base design; the SketchUp and DAE exports always use the base colours. Use the materials `accent` and `ceil` for anything that should follow the palette.
 - Plan dimensions come from a 1:50 drawing and from site measurements. Do not move existing walls unless the person gives a measurement or says the wall is different on site.
 
 ## Rules set by the project owner
@@ -61,15 +62,19 @@ Pull before you start (`git pull --ff-only`): someone else may have pushed.
 - Heights of the electrical points (positions in plan are from the drawing).
 - That the shaft box on floor 2 holds plumbing risers.
 
-## State of version 5
+## State of version 6
+
+Version 6 follows the interior designer's renders and SketchUp layout. Versions 3 to 5 are frozen.
 
 Floor 1, lobby for a complex of 30 townhouses:
-- Reception desk opposite the entrance door, backed by the existing stair wall. Guard 2 sits at its west end next to the glass door to the stair; he greets guests and helps with luggage.
+- Reception desk opposite the entrance door, backed by the existing stair wall: brushed metal front with a wood triangle and the lettering PALM STREET (the name on the designer's renders), a lower wood counter at its east end. Behind it a terrazzo panel with a TV, wood slats on both sides and a tall black cabinet for keys and parcels.
+- Guard 2 sits at the west end of the desk next to the glass door to the stair; he greets guests and helps with luggage.
 - Guard 1 sits in the security room at the barrier corner: cameras and radio only, never leaves the post, the room is never left empty. The wall between that room and the lobby stays solid. An opening hatch in the first glazing bay lets drivers talk to him before the barrier.
-- Waiting zone with a corner sofa; a charging bar along the full recess of the linen store wall (recess 500 deep, measured).
+- Waiting zone: a straight three-seat sofa on the security wall with pictures and two sconces above it, a white and wood coffee table. In the recess of the linen store wall (500 deep, measured): blue pill-shaped wall panels, two white armchairs and a side table. The charging bar of version 5 is gone.
+- Blue ceiling with black beams, beige walls, light floor. The viewer has a palette slider that recolours the accent and the ceiling.
 - Luggage room with racks; safe-deposit boxes in the cupboard under the stair.
 
-Floor 2, spa (test layout):
+Floor 2, spa (test layout, unchanged from version 5):
 - Six massage cabins with doors along the window wall, a waiting zone at the stair exit, a staff and linen room, a WC and two showers above the floor 1 toilet.
 - All old partitions are removed except the existing enclosure around the stair.
 
@@ -77,7 +82,8 @@ Floor 2, spa (test layout):
 
 - Whether the outdoor security booth is dropped, and how the guard sees and operates the barrier.
 - Where the management company sits.
-- Power for the reception desk and the charging bar; a light switch that ends up under the bar counter.
+- Power for the reception desk; where phones are charged now that the charging bar is gone.
+- Whether the lettering on the desk stays PALM STREET.
 - Measurements still needed: ceiling and beam heights, entrance door height, the stock of glass panels.
 - Whether the cross wall under the stair already exists.
 - Spa: number of cabins, privacy for the floor-to-ceiling windows, ventilation, air conditioning and electrics.
@@ -85,5 +91,5 @@ Floor 2, spa (test layout):
 ## Do not
 
 - Do not commit the source drawing, site photos, people's names or contact details. This repository is public.
-- Do not edit `v3/` or `v4/`.
+- Do not edit `v3/`, `v4/` or `v5/`.
 - Do not report a page as checked in a browser unless you really opened it.

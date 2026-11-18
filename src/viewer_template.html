@@ -56,6 +56,9 @@ button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
 .room:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .el{position:absolute;width:9px;height:9px;margin:-5px 0 0 -5px;border-radius:50%;border:1px solid rgba(0,0,0,.65);pointer-events:auto}
 .el.sq{border-radius:1px}
+.pal{display:flex;align-items:center;gap:8px;font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+.pal input{width:110px;accent-color:var(--accent)}
+#pal-name{min-width:9.5em;color:var(--muted)}
 .legend{position:absolute;right:16px;top:52px;display:flex;flex-direction:column;gap:3px;background:var(--panel);border:1px solid var(--line);
   border-radius:6px;padding:6px;font-size:12px}
 .legend button{display:flex;align-items:center;gap:7px;border:0;background:none;padding:3px 6px;font-size:12px;text-align:left;color:var(--ink)}
@@ -72,12 +75,13 @@ button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
 <body>
 <header>
   <h1>BLM Lobby <span id="ver"></span></h1>
-  <div class="meta"><a href="v5/BLM_Lobby_plans_A3_1-50.pdf" class="dl">plans PDF</a> · <a href="v5/BLM_Lobby_plan_F1.dxf" class="dl">DXF floor 1</a> · <a href="v5/BLM_Lobby_plan_F2.dxf" class="dl">DXF floor 2</a> · <a href="v5/BLM_Lobby_v5.dae" class="dl">SketchUp DAE</a> · <a href="v4/" class="dl">v4</a> · <a href="v3/" class="dl">v3</a> · Footprint <b id="sz"></b> · height <b id="hz"></b> · plan follows the 1:50 drawing, heights and stair rise are assumed</div>
+  <div class="meta"><a href="v6/BLM_Lobby_plans_A3_1-50.pdf" class="dl">plans PDF</a> · <a href="v6/BLM_Lobby_plan_F1.dxf" class="dl">DXF floor 1</a> · <a href="v6/BLM_Lobby_plan_F2.dxf" class="dl">DXF floor 2</a> · <a href="v6/BLM_Lobby_v6.dae" class="dl">SketchUp DAE</a> · <a href="v5/" class="dl">v5</a> · <a href="v4/" class="dl">v4</a> · <a href="v3/" class="dl">v3</a> · Footprint <b id="sz"></b> · height <b id="hz"></b> · plan follows the 1:50 drawing, heights and stair rise are assumed</div>
 </header>
 <main>
   <div id="stage" tabindex="0" aria-label="3D model of the lobby. Arrow keys rotate the view, plus and minus zoom."></div>
   <div class="hint">Drag to rotate. Scroll or pinch to zoom. Shift or right button to pan. Click a label to rename it.</div>
   <div class="bar layers">
+    <label class="pal" for="pal">Palette <input type="range" id="pal" min="0" max="0" step="1" value="0"> <span id="pal-name"></span></label>
     <button type="button" id="f-1" aria-pressed="true">Floor 1 · Lobby</button>
     <button type="button" id="f-2" aria-pressed="false">Floor 2 · Spa</button>
     <button type="button" id="t-rooms" aria-pressed="true">Room names</button>
@@ -121,15 +125,15 @@ var l2=new THREE.DirectionalLight(0xffffff,0.22);l2.position.set(-0.6,0.5,0.3);s
 
 // ---- geometry: one group per tag (opaque mesh, glass mesh, edge lines) ----
 var groups={},edgeLines=[];
-var buf={};
+var buf={},palTargets=[];
 M.prims.forEach(function(p){
-  var b=buf[p.tag]||(buf[p.tag]={pos:[],col:[],gpos:[],edge:[]});
+  var b=buf[p.tag]||(buf[p.tag]={pos:[],col:[],mats:[],gpos:[],edge:[]});
   var c=M.mats[p.mat],glass=c[3]<1;
   p.faces.forEach(function(f){
     for(var i=1;i<f.length-1;i++){
       [f[0],f[i],f[i+1]].forEach(function(v){
         if(glass){b.gpos.push(v[0],v[1],v[2]);}
-        else{b.pos.push(v[0],v[1],v[2]);b.col.push(c[0]/255,c[1]/255,c[2]/255);}
+        else{b.pos.push(v[0],v[1],v[2]);b.col.push(c[0]/255,c[1]/255,c[2]/255);b.mats.push(p.mat);}
       });
     }
     for(var j=0;j<f.length;j++){var a=f[j],d=f[(j+1)%f.length];b.edge.push(a[0],a[1],a[2],d[0],d[1],d[2]);}
@@ -145,7 +149,7 @@ Object.keys(buf).forEach(function(tag){
     geo.setAttribute('position',new THREE.Float32BufferAttribute(b.pos,3));
     geo.setAttribute('color',new THREE.Float32BufferAttribute(b.col,3));
     geo.computeVertexNormals();
-    g.add(new THREE.Mesh(geo,matOpaque));
+    g.add(new THREE.Mesh(geo,matOpaque));palTargets.push({attr:geo.getAttribute('color'),mats:b.mats});
   }
   if(b.gpos.length){
     var gg=new THREE.BufferGeometry();
@@ -165,7 +169,7 @@ M.texts.forEach(function(t){
   var font='700 '+F+'px Arial, Helvetica, sans-serif';
   cx.font=font;var w=Math.ceil(cx.measureText(t.text).width)+8;
   cv.width=w;cv.height=Math.ceil(F*1.2);
-  cx=cv.getContext('2d');cx.font=font;cx.fillStyle='#141416';cx.textBaseline='alphabetic';cx.fillText(t.text,4,F*0.95);
+  cx=cv.getContext('2d');cx.font=font;cx.fillStyle=t.c||'#141416';cx.textBaseline='alphabetic';cx.fillText(t.text,4,F*0.95);
   var em=t.h/0.72,W=w/F*em,Hh=1.2*em,z0=t.z-0.25*em,x=t.x-6;
   var geo=new THREE.BufferGeometry();
   var ys=t.y-6;
@@ -271,7 +275,7 @@ var VIEWS=[
   ['Entrance',[6600,2400,1650],[7200,300,1100],1],
   ['Reception and guard 2',[6585,250,1600],[7000,3200,1100],1],
   ['Waiting zone',[6700,2500,1650],[8900,1100,800],1],
-  ['Charging bar',[8000,2300,1650],[5300,900,900],1],
+  ['Armchair niche',[8000,2300,1650],[5300,900,900],1],
   ['Luggage room',[9900,3300,1700],[11600,5000,900],1],
   ['CCTV post',[9950,2450,1800],[12300,500,900],1],
   ['Barrier outside',[17500,-6500,5200],[12600,-300,600],1],
@@ -327,6 +331,21 @@ stage.addEventListener('keydown',function(e){
   else if(k==='+'||k==='=')S.r*=0.9;else if(k==='-')S.r*=1.1;else used=false;
   if(used){e.preventDefault();anim=null;clearView();apply();}
 });
+
+// ---- colour palette slider: recolours materials in place; the choice is remembered in this browser ----
+var palEl=document.getElementById('pal'),palName=document.getElementById('pal-name'),PAL=M.palettes||[{name:'Default',mats:{}}];
+function applyPalette(i){
+  i=Math.max(0,Math.min(PAL.length-1,i|0));var over=PAL[i].mats||{};
+  palTargets.forEach(function(tg){
+    for(var k=0;k<tg.mats.length;k++){var c=over[tg.mats[k]]||M.mats[tg.mats[k]];tg.attr.setXYZ(k,c[0]/255,c[1]/255,c[2]/255);}
+    tg.attr.needsUpdate=true;
+  });
+  palName.textContent=PAL[i].name;palEl.value=i;dirty=true;
+  try{localStorage.setItem('blm-lobby-palette',String(i));}catch(e){}
+}
+palEl.max=PAL.length-1;
+palEl.addEventListener('input',function(){applyPalette(parseInt(palEl.value,10)||0);});
+(function(){var s=0;try{s=parseInt(localStorage.getItem('blm-lobby-palette'),10)||0;}catch(e){}applyPalette(s);})();
 
 // ---- layers and floors: one refresh() derives every group's visibility from the state ----
 var ceilOn=false,furnOn=true;

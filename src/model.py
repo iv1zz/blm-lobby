@@ -9,9 +9,10 @@ def Y(py): return int(round((712 - py) * S / 10) * 10)
 H = 3000
 
 MATS = {  # name: (r,g,b,alpha)
-    'floor': (198, 198, 193, 1), 'wall': (228, 228, 225, 1), 'wall_dark': (222, 222, 219, 1), 'wall_grey': (176, 174, 168, 1), 'chair': (196, 188, 176, 1),
+    'floor': (228, 226, 221, 1), 'wall': (216, 208, 198, 1), 'wall_dark': (212, 204, 194, 1), 'wall_grey': (198, 190, 180, 1),
+    'accent': (30, 72, 190, 1), 'ceil': (36, 84, 170, 1), 'metal': (128, 131, 135, 1), 'terrazzo': (178, 178, 176, 1), 'white': (242, 242, 240, 1), 'chair': (196, 188, 176, 1),
     'steel': (28, 28, 30, 1), 'slab': (242, 242, 240, 1), 'concrete': (118, 120, 122, 1),
-    'wood': (140, 108, 80, 1), 'wood_dark': (78, 60, 46, 1), 'marble': (205, 205, 208, 1),
+    'wood': (150, 106, 72, 1), 'wood_dark': (78, 60, 46, 1), 'marble': (205, 205, 208, 1),
     'stone': (86, 86, 90, 1), 'fabric': (224, 224, 222, 1), 'door': (62, 62, 64, 1),
     'glass': (170, 200, 215, 0.3), 'green': (62, 122, 60, 1), 'pot': (208, 203, 194, 1),
     'alu': (44, 45, 48, 1), 'rug': (62, 56, 48, 1),
@@ -173,34 +174,39 @@ for a, b, c, d in [(XW, 5990, YS, YN), (9395, XE, YS, YN), (5990, 9395, YS, 4390
 for bx, y1 in ((2070, YI), (5070, YI), (8070, 4290), (9670, YI)):
     box('Beam', 'Ceiling', 'steel', bx - 75, bx + 75, 0, y1, H - 250, H)
 
+for a, b, c, d in [(0, XI, 0, 4290), (0, 5990, 4290, YI), (9395, XI, 4290, YI)]:
+    box('Ceiling finish', 'Ceiling', 'ceil', a, b, c, d, H - 12, H - 2)
+
 # ---------------- Reception: opposite the entrance door (X 6110-7060), facing the parking; back to the stair wall ----------------
 dx0, dx1, dS, dN = 6100, 8300, 2740, 3390
-box('Desk body', 'Reception', 'concrete', dx0, dx1, dS, dN, 0, 1050)
-box('Desk top', 'Reception', 'marble', dx0 - 50, dx1 + 50, dS - 90, dN + 90, 1050, 1100)
-L = dx1 - dx0
-prism('Desk wood front', 'Reception', 'wood', 'y', [(dx0, 1050), (dx1, 1050), (dx1, 420), (dx0 + 0.36 * L, 420)], dS - 20, dS)
-box('Desk worktop', 'Reception', 'wood_dark', dx0 + 150, dx1 - 150, dN, dN + 350, 700, 740)
-box('Stone feature wall', 'Reception', 'stone', 6300, 8100, 4170, 4290, 0, H)
-
+DXL = 7600                                   # east 700 mm of the desk is a lower wood counter
+box('Desk body', 'Reception', 'metal', dx0, DXL, dS, dN, 0, 1080)
+box('Desk top edge', 'Reception', 'steel', dx0 - 20, DXL, dS - 40, dN, 1080, 1100)
+prism('Desk wood front', 'Reception', 'wood', 'y', [(dx0 + 700, 0), (DXL, 0), (DXL, 1000)], dS - 20, dS)   # wood triangle on the brushed metal front
+box('Desk low counter', 'Reception', 'wood', DXL, dx1, dS - 250, dN, 0, 760)
+box('Desk low counter top', 'Reception', 'wood', DXL - 150, dx1 + 60, dS - 310, dN, 760, 800)
+box('Desk worktop', 'Reception', 'wood_dark', dx0 + 150, DXL - 100, dN, dN + 350, 700, 740)
+# back wall on the existing stair wall: terrazzo panel with a TV, wood slats on both sides
+box('Terrazzo feature wall', 'Reception', 'terrazzo', 6550, 8250, 4230, 4290, 0, H - 250)
+box('TV', 'Reception', 'screen', 6950, 7850, 4195, 4230, 1350, 1900)
+for xs in list(range(6010, 6540, 60)) + list(range(8260, 9470, 60)):
+    box('Wood slat', 'Reception', 'wood', xs, xs + 35, 4250, 4290, 0, H - 250)
 
 # ================= v4: functional fit-out (reception, management, security, check-in, luggage, valuables) =================
 SV = 'Service'
 # --- luggage trolley parked by the entrance door for guard 2 (greets guests, carries luggage)
-box('Luggage trolley deck', SV, 'steel', 7300, 7900, 150, 1050, 180, 220)
-for xx, yy in ((7320, 170), (7850, 170), (7320, 1000), (7850, 1000)):
+box('Luggage trolley deck', SV, 'steel', 7150, 7750, 150, 1050, 180, 220)
+for xx, yy in ((7170, 170), (7700, 170), (7170, 1000), (7700, 1000)):
     cyl('Luggage trolley wheel', SV, 'steel', xx + 15, yy + 15, 60, 60, 0, 180, 8)
 for yy in (170, 1000):
-    box('Luggage trolley post', SV, 'el_lamp', 7860, 7890, yy, yy + 30, 220, 1750)
-box('Luggage trolley rail', SV, 'el_lamp', 7860, 7890, 170, 1030, 1720, 1750)
+    box('Luggage trolley post', SV, 'el_lamp', 7710, 7740, yy, yy + 30, 220, 1750)
+box('Luggage trolley rail', SV, 'el_lamp', 7710, 7740, 170, 1030, 1720, 1750)
 # --- reception desk seats: guard 2 at the west end next to the stair door (entrance to the 2nd floor), receptionist at the east end
-for xx in (6350, 7550):
-    box('Desk chair seat', SV, 'fabric', xx, xx + 500, 3520, 4000, 420, 500)
-    box('Desk chair back', SV, 'fabric', xx, xx + 500, 3950, 4000, 500, 950)
-# --- parcels / deliveries shelf next to the reception desk (handled by guard 2 and the receptionist)
-for z in (0, 450, 900, 1350, 1780):
-    box('Parcel shelf', SV, 'wood_dark', 8500, 9450, 3940, 4290, z, z + 20)
-for xx in (8500, 9430):
-    box('Parcel shelf side', SV, 'wood_dark', xx, xx + 20, 3940, 4290, 0, 1800)
+for xx in (6350, 7000):
+    box('Desk chair seat', SV, 'accent', xx, xx + 500, 3520, 4000, 420, 500)
+    box('Desk chair back', SV, 'accent', xx, xx + 500, 3950, 4000, 500, 950)
+# --- tall black cabinet for keys and parcels, left of the terrazzo panel (as on the renders)
+box('Cabinet (keys, parcels)', SV, 'steel', 6000, 6500, 3960, 4250, 0, 2100)
 # --- site map of the 30 townhouses, first thing seen on the left of the door
 box('Site map frame', SV, 'steel', 9515, 9530, 2000, 2760, 980, 2120)      # on the security wall next to the sofa and the luggage door
 box('Site map board', SV, 'board', 9505, 9515, 2040, 2720, 1020, 2080)
@@ -214,31 +220,33 @@ def armchair(x0, y0, face):
     else:
         box('Armchair back', SV, 'chair', x0, x0 + 750, y0, y0 + 180, 420, 760)
         box('Armchair arm', SV, 'chair', x0, x0 + 130, y0 + 180, y0 + 750, 420, 620); box('Armchair arm', SV, 'chair', x0 + 620, x0 + 750, y0 + 180, y0 + 750, 420, 620)
-# corner sofa in the corner of the security wall and the parking wall; its north end stops at 1950 so the passage to the luggage room stays free
-box('Corner sofa base', SV, 'chair', 8680, 9530, 0, 1950, 0, 420)
-box('Corner sofa base', SV, 'chair', 7950, 8680, 0, 850, 0, 420)
-box('Corner sofa back', SV, 'chair', 9330, 9530, 0, 1950, 420, 820)
-box('Corner sofa back', SV, 'chair', 7950, 9330, 0, 200, 420, 820)
-box('Corner sofa arm', SV, 'chair', 8680, 9330, 1770, 1950, 420, 620)
-box('Corner sofa arm', SV, 'chair', 7950, 8130, 200, 850, 420, 620)
-for yy in (880, 1330):
-    box('Corner sofa cushion', SV, 'fabric', 8700, 9320, yy, yy + 430, 420, 510)
-for xx in (8150, 8700):
-    box('Corner sofa cushion', SV, 'fabric', xx, xx + 530 if xx < 8700 else 9320, 220, 840, 420, 510)
-cyl('Coffee table', SV, 'wood_dark', 8250, 1400, 260, 260, 380, 420, 16)
-cyl('Coffee table leg', SV, 'steel', 8250, 1400, 30, 30, 0, 380, 8)
-# bar counter with charging stations along the whole recess of the Warehouse Linen wall (recess measured on site: 500 mm deep, 2300 long)
-BX = 4880; BY0, BY1 = 20, 2280
-box('Charging bar counter', SV, 'wood', BX, BX + 450, BY0, BY1, 1010, 1060)
-box('Charging bar panel', SV, 'wood_dark', BX, BX + 60, BY0, BY1, 0, 1010)
-for yy in (BY0, 1130, BY1 - 40):
-    box('Charging bar leg', SV, 'steel', BX + 60, BX + 450, yy, yy + 40, 0, 1010)
-for yy in (330, 870, 1410, 1950):
-    box('Charging station', SV, 'el_socket', BX + 40, BX + 120, yy - 60, yy + 60, 1060, 1110)
-    cyl('Bar stool', SV, 'steel', BX + 700, yy, 30, 30, 0, 720, 8)
-    cyl('Bar stool seat', SV, 'wood_dark', BX + 700, yy, 170, 170, 720, 760, 14)
-# --- key cabinet for 30 houses behind the reception desk
-box('Key cabinet', SV, 'wood_dark', 6450, 7450, 4020, 4170, 1000, 1800)
+# straight 3-seat sofa on the security wall; its north end stops at 2150 so the passage to the luggage room stays free
+SY0, SY1 = 250, 2150
+box('Sofa base', SV, 'accent', 8680, 9530, SY0, SY1, 0, 420)
+box('Sofa back', SV, 'accent', 9330, 9530, SY0, SY1, 420, 800)
+box('Sofa arm', SV, 'accent', 8680, 9330, SY0, SY0 + 170, 420, 620); box('Sofa arm', SV, 'accent', 8680, 9330, SY1 - 170, SY1, 420, 620)
+for yy in (SY0 + 190, SY0 + 700, SY0 + 1210):
+    box('Sofa cushion', SV, 'accent', 8700, 9320, yy, yy + 500, 420, 500)
+box('Sofa pillow', SV, 'fabric', 9150, 9330, SY1 - 620, SY1 - 220, 500, 800)
+box('Coffee table white', SV, 'white', 7830, 8300, 500, 1300, 0, 400)
+box('Coffee table wood', SV, 'wood', 7830, 8300, 1300, 1900, 0, 260)
+for yy in (520, 980, 1440):                                  # three pictures above the sofa
+    box('Picture', SV, 'board', 9512, 9530, yy, yy + 400, 1350, 2150)
+for zz in (1450, 1800):                                      # two sconces on the existing wall-light outputs
+    cyl('Sconce', SV, 'el_lamp', 9500, 330, 70, 70, zz, zz + 40, 10)
+# niche of the Warehouse Linen wall (500 deep, measured): blue pill panels, two white armchairs, a side table
+NX = 4880
+for k, yy in enumerate(range(70, 2250, 275)):
+    for z0, z1 in ([(120, 1300), (1400, 2700)] if k % 2 == 0 else [(120, 700), (800, 1950), (2050, 2700)]):
+        box('Pill panel', SV, 'accent', NX, NX + 30, yy, yy + 235, z0, z1)
+for yy in (330, 1230):
+    box('Armchair seat', SV, 'white', NX + 60, NX + 760, yy, yy + 700, 250, 430)
+    box('Armchair back', SV, 'white', NX + 60, NX + 200, yy, yy + 700, 430, 800)
+    for ay in (yy, yy + 620):
+        box('Armchair arm', SV, 'white', NX + 200, NX + 760, ay, ay + 80, 430, 600)
+    for lx, ly in ((NX + 80, yy + 20), (NX + 720, yy + 20), (NX + 80, yy + 660), (NX + 720, yy + 660)):
+        box('Armchair leg', SV, 'steel', lx, lx + 20, ly, ly + 20, 0, 250)
+cyl('Side table', SV, 'wood_dark', NX + 350, 2060, 190, 190, 0, 620, 14)
 # --- luggage room: racks (3 tiers) on the north wall and by the east glazing
 def rack(name, x0, x1, y0, y1):
     for z in (150, 900, 1650):
@@ -402,14 +410,23 @@ ROOMS2 = [('m%d' % (i + 1), 'Massage %d' % (i + 1), i * BW + BW / 2, 1150) for i
     ('sh1', 'Shower 1', 3675, 4500), ('sh2', 'Shower 2', 4650, 4500), ('spacor', 'Spa corridor', 5500, 2700),
     ('lock', 'Lockers', 6500, 3600), ('land', 'Stair landing', 9950, 4950), ('shaft', 'Shaft', 4140, 5270)]
 
-TEXTS = [{'text': 'RECEPTION', 'x': dx1 - 950, 'y': dS - 20, 'z': 850, 'h': 110, 'f': 's'}]  # f='s': on a south-facing surface, x = left edge
+TEXTS = [{'text': 'PALM', 'x': dx0 + 130, 'y': dS - 20, 'z': 770, 'h': 150, 'f': 's', 'c': '#f4f4f2'},
+         {'text': 'STREET', 'x': dx0 + 130, 'y': dS - 20, 'z': 540, 'h': 150, 'f': 's', 'c': '#f4f4f2'}]  # f='s': on a south-facing surface, x = left edge
 ROOMS = [('r1', 'Warehouse Chemical', 1500, 4750), ('r2', 'Toilet', 4040, 4750), ('r3', 'Warehouse Linen', 2600, 1150),
          ('cor', 'Corridor', 3300, 3150), ('lobby', 'Lobby', 7900, 1300), ('rec', 'Reception', 7800, 3700),
          ('sec', 'Security / Office 2', 10900, 2100), ('lounge', 'Luggage Room', 10950, 4150), ('stair', 'Stairs Entrance', 5400, 4900),
          ('store', 'The Cupboard Under the Stairs', 7300, 4950),
-         ('post', 'Guard 2 (greeter, luggage)', 6500, 3700), ('g1', 'Guard 1 (CCTV, radio)', 11200, 600), ('trolley', 'Luggage trolley', 7600, 600), ('wait', 'Waiting / Taxi', 8350, 1450), ('charge', 'Charging bar', 5400, 1150), ('map', 'Site Map', 9250, 2380),
-         ('safe', 'Safe Deposit', 8900, 5250), ('keys', 'Keys', 6950, 4120), ('parcel', 'Parcels', 8980, 4120),
+         ('post', 'Guard 2 (greeter, luggage)', 6500, 3700), ('g1', 'Guard 1 (CCTV, radio)', 11200, 600), ('trolley', 'Luggage trolley', 7450, 600), ('wait', 'Waiting / Taxi', 8400, 2300), ('charge', 'Armchairs', 5400, 1150), ('map', 'Site Map', 9250, 2380),
+         ('safe', 'Safe Deposit', 8900, 5250), ('keys', 'Keys, parcels', 6250, 3800),
          ('barrier', 'Barrier to villas', 14300, 1150), ('hatch', 'Guard hatch', 13100, -250), ('parking', 'Parking', 6000, -2800)]
+PALETTES = [
+    {'name': 'Royal blue', 'mats': {}},
+    {'name': 'Teal', 'mats': {'accent': (18, 118, 128), 'ceil': (22, 100, 110)}},
+    {'name': 'Forest green', 'mats': {'accent': (34, 98, 70), 'ceil': (36, 84, 62)}},
+    {'name': 'Terracotta', 'mats': {'accent': (184, 88, 54), 'ceil': (198, 118, 84)}},
+    {'name': 'Graphite and mustard', 'mats': {'accent': (208, 162, 42), 'ceil': (54, 56, 60), 'wall': (206, 204, 200), 'wall_dark': (202, 200, 196)}},
+    {'name': 'Sand, white ceiling', 'mats': {'accent': (156, 136, 110), 'ceil': (244, 242, 236)}},
+]
 ROOM_IDS = {'r1', 'r2', 'r3', 'cor', 'lobby', 'rec', 'sec', 'lounge', 'stair', 'store'}   # the rest are zone / function labels
 ROOMS = [{'id': i, 'name': n, 'x': x, 'y': y, 'z': 60, 'f': 1, 'kind': 'room' if i in ROOM_IDS else 'zone'} for i, n, x, y in ROOMS]
 ROOMS += [{'id': i, 'name': n, 'x': int(x), 'y': int(y), 'z': F + 60, 'f': 2, 'kind': 'room'} for i, n, x, y in ROOMS2]
@@ -438,5 +455,5 @@ DIMS += [{'f': 2, 'a': [x0, y0, F + 40], 'b': [x1, y1, F + 40], 't': ('%d' % rou
 
 if __name__ == '__main__':
     import collections
-    json.dump({'mats': MATS, 'prims': prims, 'texts': TEXTS, 'rooms': ROOMS, 'elec': ELEC, 'dim': DIM, 'dims': DIMS, 'size': SIZE, 'version': 'v5', 'f2': F}, open('model.json', 'w'), separators=(',', ':'), ensure_ascii=False)
+    json.dump({'mats': MATS, 'prims': prims, 'texts': TEXTS, 'rooms': ROOMS, 'elec': ELEC, 'dim': DIM, 'dims': DIMS, 'size': SIZE, 'palettes': PALETTES, 'version': 'v6', 'f2': F}, open('model.json', 'w'), separators=(',', ':'), ensure_ascii=False)
     print(len(prims), 'prims', SIZE, collections.Counter(e['t'] for e in ELEC))
