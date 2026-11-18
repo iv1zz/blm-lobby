@@ -182,14 +182,17 @@ for a, b, c, d in [(0, XI, 0, 4290), (0, 5990, 4290, YI), (9395, XI, 4290, YI)]:
     box('Ceiling finish', 'Ceiling', 'ceil', a, b, c, d, H - 12, H - 2)
 
 # ---------------- Reception: opposite the entrance door (X 6110-7060), facing the parking; back to the stair wall ----------------
-dx0, dx1, dS, dN = 6100, 8300, 2740, 3390
-DXL = 7600                                   # east 700 mm of the desk is a lower wood counter
-box('Desk body', 'Reception', 'metal', dx0, DXL, dS, dN, 0, 1080)
-box('Desk top edge', 'Reception', 'steel', dx0 - 20, DXL, dS - 40, dN, 1080, 1100)
+# straight check-in counter, 2000 x 600: free passage at both ends, a staff zone 1130 deep behind it, entered from either end
+dx0, dx1, dS, dN = 6150, 8150, 2500, 3100
+DXL = dx1 - 700                              # east 700 mm of the counter is a lower wood section, flush with the rest
+box('Desk body', 'Reception', 'metal', dx0, DXL, dS, dS + 250, 0, 1080)
+box('Desk top edge', 'Reception', 'steel', dx0 - 20, DXL, dS - 40, dS + 250, 1080, 1100)
 prism('Desk wood front', 'Reception', 'wood', 'y', [(dx0 + 700, 0), (DXL, 0), (DXL, 1000)], dS - 20, dS)   # wood triangle on the brushed metal front
-box('Desk low counter', 'Reception', 'wood', DXL, dx1, dS - 250, dN, 0, 760)
-box('Desk low counter top', 'Reception', 'wood', DXL - 150, dx1 + 60, dS - 310, dN, 760, 800)
-box('Desk worktop', 'Reception', 'wood_dark', dx0 + 150, DXL - 100, dN, dN + 350, 700, 740)
+box('Desk end panel', 'Reception', 'metal', dx0, dx0 + 40, dS + 250, dN, 0, 1080)
+box('Desk worktop', 'Reception', 'wood_dark', dx0 + 40, DXL, dS + 250, dN, 700, 740)                      # staff worktop behind the high front
+box('Desk low counter', 'Reception', 'wood', DXL, dx1, dS, dS + 250, 0, 760)
+box('Desk low counter end', 'Reception', 'wood', dx1 - 40, dx1, dS + 250, dN, 0, 760)
+box('Desk low counter top', 'Reception', 'wood', DXL, dx1, dS - 40, dN, 760, 800)
 # back wall on the existing stair wall: terrazzo panel with a TV, wood slats on both sides
 box('Terrazzo feature wall', 'Reception', 'terrazzo', 6550, 8250, 4230, 4290, 0, H - 250)
 box('TV', 'Reception', 'screen', 6950, 7850, 4195, 4230, 1350, 1900)
@@ -207,8 +210,8 @@ for yy in (170, 1000):
 box('Luggage trolley rail', SV, 'el_lamp', 7710, 7740, 170, 1030, 1720, 1750)
 # --- reception desk seats: guard 2 at the west end next to the stair door (entrance to the 2nd floor), receptionist at the east end
 for xx in (6350, 7000):
-    box('Desk chair seat', SV, 'accent', xx, xx + 500, 3520, 4000, 420, 500)
-    box('Desk chair back', SV, 'accent', xx, xx + 500, 3950, 4000, 500, 950)
+    box('Desk chair seat', SV, 'accent', xx, xx + 500, 3200, 3680, 420, 500)
+    box('Desk chair back', SV, 'accent', xx, xx + 500, 3630, 3680, 500, 950)
 # --- tall black cabinet for keys and parcels, left of the terrazzo panel (as on the renders)
 box('Cabinet (keys, parcels)', SV, 'steel', 6000, 6500, 3960, 4250, 0, 2100)
 # --- site map of the 30 townhouses, first thing seen on the left of the door
@@ -297,7 +300,7 @@ for i in range(7):
 
 # --- floor zones (thin coloured plates, tag Zones)
 for nm, m, a, b, c, d in [
-    ('Zone arrival', 'z_arrive', 6000, 7900, 0, 1300), ('Zone waiting', 'z_wait', 4880, 6000, 0, 2300), ('Zone reception', 'z_recep', 5990, 8450, 2600, 4290),
+    ('Zone arrival', 'z_arrive', 6000, 7900, 0, 1300), ('Zone waiting', 'z_wait', 4880, 6000, 0, 2300), ('Zone reception', 'z_recep', 5990, 8450, 2400, 4290),
     ('Zone waiting', 'z_wait', 7900, 9530, 0, 2650),
     ('Zone luggage', 'z_lug', 9690, 12390, 2810, 5490), ('Zone valuables', 'z_lug', 5990, 9395, 4390, 5490),
     ('Zone CCTV post', 'z_office', 9690, 12390, 0, 2650),
@@ -456,7 +459,7 @@ _D = [(XW, -900, XE, -900, ''), (-900, YS, -900, YN, ''),                       
       (4880, 2250, 9530, 2250, ''), (5700, 0, 5700, 4290, ''),                   # lobby clear width / depth
       (4300, 2460, 4300, 3830, ''),                                              # corridor
       (6110, 180, 7060, 180, 'door'), (6585, 300, 6585, 2650, ''),               # entrance door, door to reception counter
-      (8350, 3050, 9530, 3050, ''),                                              # passage desk end - security wall
+      (dx1, 2800, 9530, 2800, ''), (7300, dN, 7300, 4230, ''),                                               # passage desk end - security wall
       (4800, 4150, 5990, 4150, 'door'),                                          # stair entrance opening
       (6250, 4400, 6250, 5490, ''), (5990, 5300, 9350, 5300, '14 x 240'),        # stair width / run
       (9690, 4700, 12390, 4700, ''), (12000, 2810, 12000, 5490, ''),             # luggage room
