@@ -1,0 +1,4 @@
+src/out/
+src/model.json
+src/*.png
+__pycache__/
