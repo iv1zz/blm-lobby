@@ -10,7 +10,7 @@ H = 2700                                     # floor 1 clear height, given by th
 
 MATS = {  # name: (r,g,b,alpha)
     'floor': (228, 226, 221, 1), 'wall': (216, 208, 198, 1), 'wall_dark': (212, 204, 194, 1), 'wall_grey': (198, 190, 180, 1),
-    'accent': (30, 72, 190, 1), 'ceil': (36, 84, 170, 1), 'metal': (128, 131, 135, 1), 'terrazzo': (178, 178, 176, 1), 'white': (242, 242, 240, 1), 'chair': (196, 188, 176, 1),
+    'accent': (30, 72, 190, 1), 'ceil': (36, 36, 38, 1), 'paint_grey': (150, 150, 148, 1), 'paint_dark': (74, 76, 80, 1), 'plaster': (172, 168, 162, 1), 'metal': (128, 131, 135, 1), 'terrazzo': (178, 178, 176, 1), 'white': (242, 242, 240, 1), 'chair': (196, 188, 176, 1),
     'steel': (28, 28, 30, 1), 'slab': (242, 242, 240, 1), 'concrete': (118, 120, 122, 1),
     'wood': (150, 106, 72, 1), 'wood_dark': (78, 60, 46, 1), 'marble': (205, 205, 208, 1),
     'stone': (86, 86, 90, 1), 'fabric': (224, 224, 222, 1), 'door': (62, 62, 64, 1),
@@ -139,8 +139,8 @@ prism('Stringer', 'Stair', 'steel', 'y', poly, yS + 60, yS + 110)
 prism('Stringer', 'Stair', 'steel', 'y', poly, yN - 110, yN - 60)
 
 # ---------------- New: stair wall, pivot door, storage under the stair ----------------
-wall('Stair wall (existing, grey plaster)', 'wall_grey', 5990, 9495, 4290, 4390)
-box('Stair door lintel', 'Partitions', 'wall', 4800, 5990, 4290, 4390, 2450, H)
+wall('Stair wall (existing, grey paint)', 'paint_grey', 5990, 9495, 4290, 4390)
+box('Stair door lintel', 'Partitions', 'paint_grey', 4800, 5990, 4290, 4390, 2450, H)
 yd = 4340; ja, jb = 4800, 5990
 box('Pivot door jamb', 'Aluminium', 'alu', ja, ja + 40, yd - 50, yd + 50, 0, 2450)
 box('Pivot door jamb', 'Aluminium', 'alu', jb - 40, jb, yd - 50, yd + 50, 0, 2450)
@@ -156,6 +156,10 @@ rbox('Pivot door handle', 'Aluminium', 'steel', px_ + 45 * math.cos(_a), yd + 45
 wall('Under-stair wall (new)', 'wall', 9395, 9495, 4390, 4550)
 door_y('Storage door', 9395, 9495, 4550, 5350)
 wall('Under-stair wall (new)', 'wall', 9395, 9495, 5350, YI)
+
+# wall finishes of the lobby as thin layers on the existing walls: small grey accents, the other walls stay light
+box('Decorative plaster, grey (sofa wall)', 'Partitions', 'plaster', 9522, 9530, 0, 2810, 0, H)
+box('Dark grey paint (niche wall)', 'Partitions', 'paint_dark', 4880, 4888, 0, 2300, 0, H)
 
 # ---------------- New: aluminium glazed partition closing the lounge ----------------
 xp = 9610; p0, p1 = 2810, 4290; DW = 900
@@ -430,7 +434,8 @@ ROOMS = [('r1', 'Warehouse Chemical', 1500, 4750), ('r2', 'Toilet', 4040, 4750),
          ('safe', 'Safe Deposit', 8900, 5250), ('keys', 'Keys, parcels', 6250, 3800),
          ('barrier', 'Barrier to villas', 14300, 1150), ('hatch', 'Guard hatch', 13100, -250), ('parking', 'Parking', 6000, -2800)]
 PALETTES = [
-    {'name': 'Royal blue', 'mats': {}},
+    {'name': 'Black ceiling, grey accents', 'mats': {}},
+    {'name': 'Royal blue ceiling', 'mats': {'ceil': (36, 84, 170)}},
     {'name': 'Teal', 'mats': {'accent': (18, 118, 128), 'ceil': (22, 100, 110)}},
     {'name': 'Forest green', 'mats': {'accent': (34, 98, 70), 'ceil': (36, 84, 62)}},
     {'name': 'Terracotta', 'mats': {'accent': (184, 88, 54), 'ceil': (198, 118, 84)}},

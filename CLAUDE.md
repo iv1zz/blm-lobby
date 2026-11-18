@@ -72,7 +72,7 @@ Floor 1, lobby for a complex of 30 townhouses:
 - Guard 2 sits at the west end of the desk next to the glass door to the stair; he greets guests and helps with luggage.
 - Guard 1 sits in the security room at the barrier corner: cameras and radio only, never leaves the post, the room is never left empty. The wall between that room and the lobby stays solid. An opening hatch in the first glazing bay lets drivers talk to him before the barrier.
 - Waiting zone: a straight three-seat sofa on the security wall with pictures and two sconces above it, a white and wood coffee table. In the recess of the linen store wall (500 deep, measured): blue pill-shaped wall panels, two white armchairs and a side table. The charging bar of version 5 is gone.
-- Blue ceiling with black beams, beige walls, light floor. The viewer has a palette slider that recolours the accent and the ceiling.
+- Black ceiling with black beams, light walls and floor, blue sofa and wall panels. Grey accents on the walls: decorative grey plaster on the sofa wall, dark grey paint in the armchair niche, grey paint on the stair wall behind the desk. The viewer has a palette slider that recolours the accent and the ceiling; the blue ceiling of the designer's renders is its second position.
 - Luggage room with racks; safe-deposit boxes in the cupboard under the stair.
 
 Materials already on site, as used so far (sizes estimated from photos, not measured): six glass panels about 1100 x 2300 as frosted lights in the spa corridor wall, one beside each cabin door; white boards for the lobby coffee table and for the spa lockers, linen shelves and tea console.
